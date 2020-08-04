@@ -6,7 +6,6 @@ import cn.hfbin.seckill.common.Const;
 import cn.hfbin.seckill.entity.OrderInfo;
 import cn.hfbin.seckill.entity.SeckillOrder;
 import cn.hfbin.seckill.entity.User;
-import cn.hfbin.seckill.mq.MQReceiver;
 import cn.hfbin.seckill.mq.MQSender;
 import cn.hfbin.seckill.mq.SeckillMessage;
 import cn.hfbin.seckill.redis.GoodsKey;
@@ -17,7 +16,6 @@ import cn.hfbin.seckill.result.Result;
 import cn.hfbin.seckill.service.SeckillGoodsService;
 import cn.hfbin.seckill.service.SeckillOrderService;
 import cn.hfbin.seckill.util.CookieUtil;
-import cn.hfbin.seckill.vo.OrderDetailVo;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -51,7 +49,7 @@ public class SeckillController implements InitializingBean {
     @Autowired
     MQSender mqSender;
 
-    private HashMap<Long, Boolean> localOverMap = new HashMap<Long, Boolean>();
+    private final HashMap<Long, Boolean> localOverMap = new HashMap<Long, Boolean>();
 
     /**
      * 系统初始化
@@ -172,7 +170,8 @@ public class SeckillController implements InitializingBean {
         long result = seckillOrderService.getSeckillResult((long) user.getId(), goodsId);
         return Result.success(result);
     }
-    @AccessLimit(seconds=5, maxCount=5, needLogin=true)
+
+    @AccessLimit(seconds = 5, maxCount = 5, needLogin = true)
     @RequestMapping(value = "/path", method = RequestMethod.GET)
     @ResponseBody
     public Result<String> getMiaoshaPath(HttpServletRequest request, User user,

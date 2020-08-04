@@ -2,7 +2,6 @@ package cn.hfbin.seckill.controller;
 
 import cn.hfbin.seckill.bo.GoodsBo;
 import cn.hfbin.seckill.entity.OrderInfo;
-import cn.hfbin.seckill.entity.SeckillOrder;
 import cn.hfbin.seckill.entity.User;
 import cn.hfbin.seckill.redis.RedisService;
 import cn.hfbin.seckill.redis.UserKey;
@@ -40,14 +39,14 @@ public class SeckillOrderController {
     @RequestMapping("/detail")
     @ResponseBody
     public Result<OrderDetailVo> info(Model model,
-                                      @RequestParam("orderId") long orderId , HttpServletRequest request) {
+                                      @RequestParam("orderId") long orderId, HttpServletRequest request) {
         String loginToken = CookieUtil.readLoginToken(request);
         User user = redisService.get(UserKey.getByName, loginToken, User.class);
-        if(user == null) {
+        if (user == null) {
             return Result.error(CodeMsg.USER_NO_LOGIN);
         }
         OrderInfo order = seckillOrderService.getOrderInfo(orderId);
-        if(order == null) {
+        if (order == null) {
             return Result.error(CodeMsg.ORDER_NOT_EXIST);
         }
         long goodsId = order.getGoodsId();

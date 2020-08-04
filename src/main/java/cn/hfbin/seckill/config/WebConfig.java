@@ -2,8 +2,6 @@ package cn.hfbin.seckill.config;
 
 import cn.hfbin.seckill.filter.SessionExpireFilter;
 import cn.hfbin.seckill.interceptor.AuthorityInterceptor;
-import org.apache.catalina.filters.AddDefaultCharsetFilter;
-import org.apache.catalina.filters.RemoteIpFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +22,7 @@ import javax.servlet.Filter;
 public class WebConfig extends WebMvcConfigurerAdapter {
     @Autowired
     AuthorityInterceptor authorityInterceptor;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         // addPathPatterns 用于添加拦截规则

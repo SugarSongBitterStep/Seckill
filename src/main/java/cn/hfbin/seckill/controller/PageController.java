@@ -16,7 +16,7 @@ public class PageController {
 
 
     @RequestMapping("login")
-    public String loginPage(){
+    public String loginPage() {
 
         return "login";
     }

@@ -16,5 +16,5 @@ public interface SeckillOrderMapper {
 
     int updateByPrimaryKey(SeckillOrder record);
 
-    SeckillOrder selectByUserIdAndGoodsId(@Param("userId") long userId , @Param("goodsId") long goodsId );
+    SeckillOrder selectByUserIdAndGoodsId(@Param("userId") long userId, @Param("goodsId") long goodsId);
 }

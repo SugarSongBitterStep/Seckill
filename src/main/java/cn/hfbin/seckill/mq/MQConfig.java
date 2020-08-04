@@ -1,9 +1,6 @@
 package cn.hfbin.seckill.mq;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
@@ -11,9 +8,9 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class MQConfig {
-	
-	public static final String MIAOSHA_QUEUE = "seckill.queue";
-	public static final String QUEUE = "queue";
+
+    public static final String MIAOSHA_QUEUE = "seckill.queue";
+    public static final String QUEUE = "queue";
 	/*public static final String TOPIC_QUEUE1 = "topic.queue1";
 	public static final String TOPIC_QUEUE2 = "topic.queue2";
 	public static final String HEADER_QUEUE = "header.queue";
@@ -21,17 +18,18 @@ public class MQConfig {
 	public static final String FANOUT_EXCHANGE = "fanoutxchage";
 	public static final String HEADERS_EXCHANGE = "headersExchage";*/
 
-	@Bean
-	public MessageConverter getMessageConverter() {
-		return new Jackson2JsonMessageConverter();
-	}
-	@Bean
-	public Queue queue() {
-		return new Queue(QUEUE, true);
-	}
-	/**
-	 * Direct模式 交换机Exchange
-	 * */
+    @Bean
+    public MessageConverter getMessageConverter() {
+        return new Jackson2JsonMessageConverter();
+    }
+
+    @Bean
+    public Queue queue() {
+        return new Queue(QUEUE, true);
+    }
+    /**
+     * Direct模式 交换机Exchange
+     * */
 	/*@Bean
 	public Queue queue() {
 		return new Queue(QUEUE, true);
@@ -42,8 +40,8 @@ public class MQConfig {
 	}
 	
 	*//**
-	 * Topic模式 交换机Exchange
-	 * *//*
+     * Topic模式 交换机Exchange
+     * *//*
 	@Bean
 	public Queue topicQueue1() {
 		return new Queue(TOPIC_QUEUE1, true);
@@ -65,8 +63,8 @@ public class MQConfig {
 		return BindingBuilder.bind(topicQueue2()).to(topicExchage()).with("topic.#");
 	}
 	*//**
-	 * Fanout模式 交换机Exchange
-	 * *//*
+     * Fanout模式 交换机Exchange
+     * *//*
 	@Bean
 	public FanoutExchange fanoutExchage(){
 		return new FanoutExchange(FANOUT_EXCHANGE);
@@ -80,8 +78,8 @@ public class MQConfig {
 		return BindingBuilder.bind(topicQueue2()).to(fanoutExchage());
 	}
 	*//**
-	 * Header模式 交换机Exchange
-	 * *//*
+     * Header模式 交换机Exchange
+     * *//*
 	@Bean
 	public HeadersExchange headersExchage(){
 		return new HeadersExchange(HEADERS_EXCHANGE);
@@ -98,5 +96,5 @@ public class MQConfig {
 		return BindingBuilder.bind(headerQueue1()).to(headersExchage()).whereAll(map).match();
 	}
 	*/
-	
+
 }

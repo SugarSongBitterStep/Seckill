@@ -1,7 +1,6 @@
 package cn.hfbin.seckill.interceptor;
 
 import cn.hfbin.seckill.annotations.AccessLimit;
-import cn.hfbin.seckill.common.Const;
 import cn.hfbin.seckill.entity.User;
 import cn.hfbin.seckill.redis.AccessKey;
 import cn.hfbin.seckill.redis.RedisService;
@@ -9,9 +8,7 @@ import cn.hfbin.seckill.redis.UserKey;
 import cn.hfbin.seckill.result.CodeMsg;
 import cn.hfbin.seckill.result.Result;
 import cn.hfbin.seckill.util.CookieUtil;
-import cn.hfbin.seckill.util.JsonUtil;
 import com.alibaba.fastjson.JSON;
-import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
@@ -37,7 +34,7 @@ public class AuthorityInterceptor implements HandlerInterceptor {
     @Autowired
     RedisService redisService;
 
-    private Logger logger = LoggerFactory.getLogger(AuthorityInterceptor.class);
+    private final Logger logger = LoggerFactory.getLogger(AuthorityInterceptor.class);
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -66,7 +63,7 @@ public class AuthorityInterceptor implements HandlerInterceptor {
 
         //接口限流
         AccessLimit accessLimit = handlerMethod.getMethodAnnotation(AccessLimit.class);
-        if(accessLimit == null) {
+        if (accessLimit == null) {
             return true;
         }
         int seconds = accessLimit.seconds();
@@ -89,22 +86,22 @@ public class AuthorityInterceptor implements HandlerInterceptor {
             user = redisService.get(UserKey.getByName, loginToken, User.class);
         }
 
-        if(needLogin) {
-            if(user == null) {
+        if (needLogin) {
+            if (user == null) {
                 render(response, CodeMsg.USER_NO_LOGIN);
                 return false;
             }
             key += "_" + user.getId();
-        }else {
+        } else {
             //do nothing
         }
         AccessKey ak = AccessKey.withExpire;
         Integer count = redisService.get(ak, key, Integer.class);
-        if(count  == null) {
+        if (count == null) {
             redisService.set(ak, key, 1, seconds);
-        }else if(count < maxCount) {
+        } else if (count < maxCount) {
             redisService.incr(ak, key);
-        }else {
+        } else {
             render(response, CodeMsg.ACCESS_LIMIT_REACHED);
             return false;
         }
@@ -135,11 +132,12 @@ public class AuthorityInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
     }
-    private void render(HttpServletResponse response, CodeMsg cm)throws Exception {
+
+    private void render(HttpServletResponse response, CodeMsg cm) throws Exception {
         response.setContentType("application/json;charset=UTF-8");
         OutputStream out = response.getOutputStream();
-        String str  = JSON.toJSONString(Result.error(cm));
-        out.write(str.getBytes("UTF-8"));
+        String str = JSON.toJSONString(Result.error(cm));
+        out.write(str.getBytes(StandardCharsets.UTF_8));
         out.flush();
         out.close();
     }

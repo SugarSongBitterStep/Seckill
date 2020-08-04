@@ -15,10 +15,10 @@ import cn.hfbin.seckill.entity.User;
  */
 public interface SeckillOrderService {
 
-    SeckillOrder getSeckillOrderByUserIdGoodsId(long userId , long goodsId);
+    SeckillOrder getSeckillOrderByUserIdGoodsId(long userId, long goodsId);
 
 
-    OrderInfo insert(User user , GoodsBo goodsBo);
+    OrderInfo insert(User user, GoodsBo goodsBo);
 
     OrderInfo getOrderInfo(long orderId);
 
