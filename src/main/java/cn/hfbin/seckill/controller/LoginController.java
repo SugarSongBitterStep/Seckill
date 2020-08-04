@@ -1,6 +1,6 @@
 package cn.hfbin.seckill.controller;
 
-import cn.hfbin.seckill.common.Const;
+import cn.hfbin.seckill.common.CommonConst;
 import cn.hfbin.seckill.entity.User;
 import cn.hfbin.seckill.param.LoginParam;
 import cn.hfbin.seckill.redis.RedisService;
@@ -39,7 +39,7 @@ public class LoginController {
         Result<User> login = userService.login(loginParam);
         if (login.isSuccess()) {
             CookieUtil.writeLoginToken(response, session.getId());
-            redisService.set(UserKey.getByName, session.getId(), login.getData(), Const.RedisCacheExtime.REDIS_SESSION_EXTIME);
+            redisService.set(UserKey.getByName, session.getId(), login.getData(), CommonConst.RedisCacheExtime.REDIS_SESSION_EXTIME);
         }
         return login;
     }

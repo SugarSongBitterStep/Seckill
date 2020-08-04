@@ -2,7 +2,7 @@ package cn.hfbin.seckill.controller;
 
 import cn.hfbin.seckill.annotations.AccessLimit;
 import cn.hfbin.seckill.bo.GoodsBo;
-import cn.hfbin.seckill.common.Const;
+import cn.hfbin.seckill.common.CommonConst;
 import cn.hfbin.seckill.entity.OrderInfo;
 import cn.hfbin.seckill.entity.SeckillOrder;
 import cn.hfbin.seckill.entity.User;
@@ -54,13 +54,14 @@ public class SeckillController implements InitializingBean {
     /**
      * 系统初始化
      */
+    @Override
     public void afterPropertiesSet() throws Exception {
         List<GoodsBo> goodsList = seckillGoodsService.getSeckillGoodsList();
         if (goodsList == null) {
             return;
         }
         for (GoodsBo goods : goodsList) {
-            redisService.set(GoodsKey.getSeckillGoodsStock, "" + goods.getId(), goods.getStockCount(), Const.RedisCacheExtime.GOODS_LIST);
+            redisService.set(GoodsKey.getSeckillGoodsStock, "" + goods.getId(), goods.getStockCount(), CommonConst.RedisCacheExtime.GOODS_LIST);
             localOverMap.put(goods.getId(), false);
         }
     }

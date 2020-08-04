@@ -7,6 +7,7 @@ package cn.hfbin.seckill.result;
  * Date: 2018/6/09
  * Time: 12:00
  * Such description:
+ * @author az
  */
 public class Result<T> {
 
@@ -19,11 +20,11 @@ public class Result<T> {
     }
 
     public static <T> Result<T> success(T data) {
-        return new Result<T>(data);
+        return new Result<>(data);
     }
 
     public static <T> Result<T> error(CodeMsg codeMsg) {
-        return new Result<T>(codeMsg);
+        return new Result<>(codeMsg);
     }
 
     private Result(T data) {

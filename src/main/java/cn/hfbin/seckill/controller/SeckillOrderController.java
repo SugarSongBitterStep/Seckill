@@ -38,8 +38,7 @@ public class SeckillOrderController {
 
     @RequestMapping("/detail")
     @ResponseBody
-    public Result<OrderDetailVo> info(Model model,
-                                      @RequestParam("orderId") long orderId, HttpServletRequest request) {
+    public Result<OrderDetailVo> info(@RequestParam("orderId") long orderId, HttpServletRequest request) {
         String loginToken = CookieUtil.readLoginToken(request);
         User user = redisService.get(UserKey.getByName, loginToken, User.class);
         if (user == null) {

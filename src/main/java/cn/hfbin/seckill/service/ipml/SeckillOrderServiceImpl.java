@@ -1,7 +1,7 @@
 package cn.hfbin.seckill.service.ipml;
 
 import cn.hfbin.seckill.bo.GoodsBo;
-import cn.hfbin.seckill.common.Const;
+import cn.hfbin.seckill.common.CommonConst;
 import cn.hfbin.seckill.dao.SeckillOrderMapper;
 import cn.hfbin.seckill.entity.OrderInfo;
 import cn.hfbin.seckill.entity.SeckillOrder;
@@ -88,6 +88,7 @@ public class SeckillOrderServiceImpl implements SeckillOrderService {
         return orderService.getOrderInfo(seckillOrder.getOrderId());
     }
 
+    @Override
     public long getSeckillResult(Long userId, long goodsId) {
         SeckillOrder order = getSeckillOrderByUserIdGoodsId(userId, goodsId);
         if (order != null) {//秒杀成功
@@ -102,6 +103,7 @@ public class SeckillOrderServiceImpl implements SeckillOrderService {
         }
     }
 
+    @Override
     public boolean checkPath(User user, long goodsId, String path) {
         if (user == null || path == null) {
             return false;
@@ -110,12 +112,13 @@ public class SeckillOrderServiceImpl implements SeckillOrderService {
         return path.equals(pathOld);
     }
 
+    @Override
     public String createMiaoshaPath(User user, long goodsId) {
         if (user == null || goodsId <= 0) {
             return null;
         }
         String str = MD5Util.md5(UUID.randomUUID() + "123456");
-        redisService.set(SeckillKey.getSeckillPath, "" + user.getId() + "_" + goodsId, str, Const.RedisCacheExtime.GOODS_ID);
+        redisService.set(SeckillKey.getSeckillPath, "" + user.getId() + "_" + goodsId, str, CommonConst.RedisCacheExtime.GOODS_ID);
         return str;
     }
 
@@ -123,7 +126,7 @@ public class SeckillOrderServiceImpl implements SeckillOrderService {
      * 秒杀商品结束标记
      * */
     private void setGoodsOver(Long goodsId) {
-        redisService.set(SeckillKey.isGoodsOver, "" + goodsId, true, Const.RedisCacheExtime.GOODS_ID);
+        redisService.set(SeckillKey.isGoodsOver, "" + goodsId, true, CommonConst.RedisCacheExtime.GOODS_ID);
     }
 
     /*

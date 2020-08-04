@@ -17,7 +17,6 @@ public interface SeckillOrderService {
 
     SeckillOrder getSeckillOrderByUserIdGoodsId(long userId, long goodsId);
 
-
     OrderInfo insert(User user, GoodsBo goodsBo);
 
     OrderInfo getOrderInfo(long orderId);
