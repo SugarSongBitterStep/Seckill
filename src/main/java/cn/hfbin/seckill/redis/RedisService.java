@@ -22,8 +22,7 @@ public class RedisService {
             //生成真正的key
             String realKey = prefix.getPrefix() + key;
             String str = jedis.get(realKey);
-            T t = stringToBean(str, clazz);
-            return t;
+            return stringToBean(str, clazz);
         } finally {
             returnToPool(jedis);
         }
@@ -31,7 +30,7 @@ public class RedisService {
 
     public Long expice(KeyPrefix prefix, String key, int exTime) {
         Jedis jedis = null;
-        Long result = null;
+        Long result;
         try {
             jedis = jedisPool.getResource();
             result = jedis.expire(prefix.getPrefix() + key, exTime);

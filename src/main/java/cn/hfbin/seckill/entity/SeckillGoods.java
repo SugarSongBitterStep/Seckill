@@ -1,5 +1,7 @@
 package cn.hfbin.seckill.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -10,7 +12,10 @@ import java.util.Date;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@TableName("seckill_goods")
 public class SeckillGoods {
+
+    @TableId
     private Long id;
 
     private Long goodsId;

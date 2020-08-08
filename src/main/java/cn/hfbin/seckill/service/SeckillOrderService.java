@@ -4,6 +4,7 @@ import cn.hfbin.seckill.bo.GoodsBo;
 import cn.hfbin.seckill.entity.OrderInfo;
 import cn.hfbin.seckill.entity.SeckillOrder;
 import cn.hfbin.seckill.entity.User;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * My Blog : www.hfbin.cn
@@ -13,7 +14,7 @@ import cn.hfbin.seckill.entity.User;
  * Time: 16:46
  * Such description:
  */
-public interface SeckillOrderService {
+public interface SeckillOrderService extends IService<SeckillOrder> {
 
     SeckillOrder getSeckillOrderByUserIdGoodsId(long userId, long goodsId);
 

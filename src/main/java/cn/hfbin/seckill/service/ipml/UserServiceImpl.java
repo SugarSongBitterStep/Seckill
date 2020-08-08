@@ -7,9 +7,11 @@ import cn.hfbin.seckill.result.CodeMsg;
 import cn.hfbin.seckill.result.Result;
 import cn.hfbin.seckill.service.UserService;
 import cn.hfbin.seckill.util.MD5Util;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 /**
  * Created by: HuangFuBin
@@ -18,9 +20,9 @@ import org.springframework.stereotype.Service;
  * Such description:
  */
 @Service("userService")
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
-    @Autowired
+    @Resource
     UserMapper userMapper;
 
     @Override
@@ -31,8 +33,8 @@ public class UserServiceImpl implements UserService {
             return Result.error(CodeMsg.MOBILE_NOT_EXIST);
         }
         String dbPwd = user.getPassword();
-        String saltDB = user.getSalt();
-        String calcPass = MD5Util.formPassToDBPass(loginParam.getPassword(), saltDB);
+        String salt = user.getSalt();
+        String calcPass = MD5Util.formPassToDBPass(loginParam.getPassword(), salt);
         if (!StringUtils.equals(dbPwd, calcPass)) {
             return Result.error(CodeMsg.PASSWORD_ERROR);
         }

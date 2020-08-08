@@ -1,6 +1,8 @@
 package cn.hfbin.seckill.service;
 
 import cn.hfbin.seckill.bo.GoodsBo;
+import cn.hfbin.seckill.entity.SeckillGoods;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
 
@@ -12,7 +14,7 @@ import java.util.List;
  * Time: 19:46
  * Such description:
  */
-public interface SeckillGoodsService {
+public interface SeckillGoodsService extends IService<SeckillGoods> {
 
     List<GoodsBo> getSeckillGoodsList();
 

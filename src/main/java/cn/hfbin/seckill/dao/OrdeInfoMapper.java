@@ -1,11 +1,13 @@
 package cn.hfbin.seckill.dao;
 
 import cn.hfbin.seckill.entity.OrderInfo;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 
-public interface OrdeInfoMapper {
+@Mapper
+public interface OrdeInfoMapper extends BaseMapper<OrderInfo> {
+
     int deleteByPrimaryKey(Long id);
-
-    int insert(OrderInfo record);
 
     int insertSelective(OrderInfo record);
 

@@ -13,13 +13,11 @@ import cn.hfbin.seckill.util.CookieUtil;
 import cn.hfbin.seckill.vo.GoodsDetailVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -39,13 +37,6 @@ public class GoodsController {
     RedisService redisService;
     @Autowired
     SeckillGoodsService seckillGoodsService;
-
-
-    @Autowired
-    ThymeleafViewResolver thymeleafViewResolver;
-
-    @Autowired
-    ApplicationContext applicationContext;
 
     @RequestMapping("/list")
     public String list(Model model) {
@@ -125,14 +116,12 @@ public class GoodsController {
             int miaoshaStatus = 0;
             int remainSeconds = 0;
             if (now < startAt) {//秒杀还没开始，倒计时
-                miaoshaStatus = 0;
                 remainSeconds = (int) ((startAt - now) / 1000);
             } else if (now > endAt) {//秒杀已经结束
                 miaoshaStatus = 2;
                 remainSeconds = -1;
             } else {//秒杀进行中
                 miaoshaStatus = 1;
-                remainSeconds = 0;
             }
             GoodsDetailVo vo = new GoodsDetailVo();
             vo.setGoods(goods);

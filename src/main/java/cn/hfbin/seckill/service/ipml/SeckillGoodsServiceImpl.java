@@ -2,10 +2,13 @@ package cn.hfbin.seckill.service.ipml;
 
 import cn.hfbin.seckill.bo.GoodsBo;
 import cn.hfbin.seckill.dao.GoodsMapper;
+import cn.hfbin.seckill.dao.SeckillGoodsMapper;
+import cn.hfbin.seckill.entity.SeckillGoods;
 import cn.hfbin.seckill.service.SeckillGoodsService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -16,9 +19,10 @@ import java.util.List;
  */
 
 @Service("seckillGoodsService")
-public class SeckillGoodsServiceImpl implements SeckillGoodsService {
-    @Autowired
-    GoodsMapper goodsMapper;
+public class SeckillGoodsServiceImpl extends ServiceImpl<SeckillGoodsMapper, SeckillGoods> implements SeckillGoodsService {
+
+    @Resource
+    private GoodsMapper goodsMapper;
 
     @Override
     public List<GoodsBo> getSeckillGoodsList() {

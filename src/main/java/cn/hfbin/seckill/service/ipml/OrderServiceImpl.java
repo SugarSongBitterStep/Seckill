@@ -3,7 +3,7 @@ package cn.hfbin.seckill.service.ipml;
 import cn.hfbin.seckill.dao.OrdeInfoMapper;
 import cn.hfbin.seckill.entity.OrderInfo;
 import cn.hfbin.seckill.service.OrderService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,17 +13,15 @@ import org.springframework.stereotype.Service;
  * Such description:
  */
 @Service("orderService")
-public class OrderServiceImpl implements OrderService {
-    @Autowired
-    OrdeInfoMapper ordeInfoMapper;
+public class OrderServiceImpl extends ServiceImpl<OrdeInfoMapper, OrderInfo> implements OrderService {
 
     @Override
     public long addOrder(OrderInfo orderInfo) {
-        return ordeInfoMapper.insertSelective(orderInfo);
+        return baseMapper.insertSelective(orderInfo);
     }
 
     @Override
     public OrderInfo getOrderInfo(long orderId) {
-        return ordeInfoMapper.selectByPrimaryKey(orderId);
+        return baseMapper.selectByPrimaryKey(orderId);
     }
 }

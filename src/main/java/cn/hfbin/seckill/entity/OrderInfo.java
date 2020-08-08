@@ -1,5 +1,7 @@
 package cn.hfbin.seckill.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -10,7 +12,10 @@ import java.util.Date;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@TableName("order_info")
 public class OrderInfo {
+
+    @TableId
     private Long id;
 
     private Long userId;

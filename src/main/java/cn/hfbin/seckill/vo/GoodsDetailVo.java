@@ -14,8 +14,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class GoodsDetailVo {
-    private final int miaoshaStatus = 0;
-    private final int remainSeconds = 0;
+    private final Integer miaoshaStatus = 0;
+    private final Integer remainSeconds = 0;
     private GoodsBo goods;
     private User user;
 }

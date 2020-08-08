@@ -1,5 +1,7 @@
 package cn.hfbin.seckill.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 @Setter
@@ -7,7 +9,10 @@ import lombok.*;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@TableName("seckill_order")
 public class SeckillOrder {
+
+    @TableId
     private Long id;
 
     private Long userId;

@@ -5,9 +5,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/seckill?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    url: jdbc:mysql://180.76.169.35:3306/SecKill?useUnicode=true&characterEncoding=UTF-8&useSSL=false
     username: root
-    password: ....
+    password: azusa520
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
       max-active: 1000
@@ -36,7 +36,7 @@ spring:
     servlet:
       content-type: text/html
   redis:
-    host: 127.0.0.1
+    host: 180.76.169.35
     port: 6379
     timeout: 10
     jedis:
@@ -57,10 +57,10 @@ spring:
     static-locations: classpath:/static/
 
   rabbitmq:
-    host: 12
+    host: 180.76.169.35
     port: 5672
-    username: guest
-    password: guest
+    username: admin
+    password: admin
     virtual-host: /
     listener:
       simple:
@@ -76,11 +76,13 @@ spring:
         max-interval: 1000
         multiplier: 1
 
-mybatis:
-  config-location: classpath:mybatis/mybatis-config.xml
-  mapper-locations: classpath:mybatis/mappers/*.xml
+mybatis-plus:
   configuration:
     default-enum-type-handler: org.apache.ibatis.type.EnumTypeHandler
+    map-underscore-to-camel-case: true
+    default-executor-type: simple
     jdbc-type-for-null: null
-  executor-type: simple
+  global-config:
+    banner: off
   type-aliases-package: cn.hfbin.seckill.entity
+  mapper-locations: classpath:mybatis/mappers/*.xml

@@ -1,6 +1,8 @@
 package cn.hfbin.seckill.dao;
 
 import cn.hfbin.seckill.entity.User;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -11,7 +13,8 @@ import org.apache.ibatis.annotations.Param;
  * Time: 11:29
  * Such description:
  */
-public interface UserMapper {
+@Mapper
+public interface UserMapper extends BaseMapper<User> {
 
     User selectByPhoneAndPassword(@Param("phone") String phone, @Param("password") String password);
 

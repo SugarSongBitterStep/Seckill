@@ -2,10 +2,13 @@ package cn.hfbin.seckill.dao;
 
 import cn.hfbin.seckill.bo.GoodsBo;
 import cn.hfbin.seckill.entity.Goods;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
-public interface GoodsMapper {
+@Mapper
+public interface GoodsMapper extends BaseMapper<Goods> {
     int deleteByPrimaryKey(Long id);
 
     int insert(Goods record);

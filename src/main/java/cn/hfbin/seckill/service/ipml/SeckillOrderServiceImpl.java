@@ -12,6 +12,7 @@ import cn.hfbin.seckill.service.OrderService;
 import cn.hfbin.seckill.service.SeckillGoodsService;
 import cn.hfbin.seckill.service.SeckillOrderService;
 import cn.hfbin.seckill.util.MD5Util;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,23 +29,32 @@ import java.util.UUID;
  */
 @Slf4j
 @Service("seckillOrderService")
-public class SeckillOrderServiceImpl implements SeckillOrderService {
+public class SeckillOrderServiceImpl extends ServiceImpl<SeckillOrderMapper, SeckillOrder> implements SeckillOrderService {
 
-    @Autowired
-    SeckillOrderMapper seckillOrderMapper;
-
-    @Autowired
     SeckillGoodsService seckillGoodsService;
 
-    @Autowired
     RedisService redisService;
 
-    @Autowired
     OrderService orderService;
+
+    @Autowired
+    public void setSeckillGoodsService(SeckillGoodsService seckillGoodsService) {
+        this.seckillGoodsService = seckillGoodsService;
+    }
+
+    @Autowired
+    public void setRedisService(RedisService redisService) {
+        this.redisService = redisService;
+    }
+
+    @Autowired
+    public void setOrderService(OrderService orderService) {
+        this.orderService = orderService;
+    }
 
     @Override
     public SeckillOrder getSeckillOrderByUserIdGoodsId(long userId, long goodsId) {
-        return seckillOrderMapper.selectByUserIdAndGoodsId(userId, goodsId);
+        return baseMapper.selectByUserIdAndGoodsId(userId, goodsId);
     }
 
     @Transactional
@@ -71,7 +81,7 @@ public class SeckillOrderServiceImpl implements SeckillOrderService {
             seckillOrder.setOrderId(orderInfo.getId());
             seckillOrder.setUserId((long) user.getId());
             //插入秒杀表
-            seckillOrderMapper.insertSelective(seckillOrder);
+            baseMapper.insertSelective(seckillOrder);
             return orderInfo;
         } else {
             setGoodsOver(goods.getId());
@@ -81,7 +91,7 @@ public class SeckillOrderServiceImpl implements SeckillOrderService {
 
     @Override
     public OrderInfo getOrderInfo(long orderId) {
-        SeckillOrder seckillOrder = seckillOrderMapper.selectByPrimaryKey(orderId);
+        SeckillOrder seckillOrder = baseMapper.selectByPrimaryKey(orderId);
         if (seckillOrder == null) {
             return null;
         }
@@ -91,7 +101,8 @@ public class SeckillOrderServiceImpl implements SeckillOrderService {
     @Override
     public long getSeckillResult(Long userId, long goodsId) {
         SeckillOrder order = getSeckillOrderByUserIdGoodsId(userId, goodsId);
-        if (order != null) {//秒杀成功
+        // 秒杀成功
+        if (order != null) {
             return order.getOrderId();
         } else {
             boolean isOver = getGoodsOver(goodsId);
@@ -122,16 +133,16 @@ public class SeckillOrderServiceImpl implements SeckillOrderService {
         return str;
     }
 
-    /*
+    /**
      * 秒杀商品结束标记
-     * */
+     */
     private void setGoodsOver(Long goodsId) {
         redisService.set(SeckillKey.isGoodsOver, "" + goodsId, true, CommonConst.RedisCacheExtime.GOODS_ID);
     }
 
-    /*
+    /**
      * 查看秒杀商品是否已经结束
-     * */
+     */
     private boolean getGoodsOver(long goodsId) {
         return redisService.exists(SeckillKey.isGoodsOver, "" + goodsId);
     }
