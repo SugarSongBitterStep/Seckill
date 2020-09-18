@@ -79,11 +79,14 @@ spring:
 
 mybatis-plus:
   configuration:
-    default-enum-type-handler: org.apache.ibatis.type.EnumTypeHandler
+    default-enum-type-handler: com.baomidou.mybatisplus.extension.handlers.MybatisEnumTypeHandler
     map-underscore-to-camel-case: true
     default-executor-type: simple
-    jdbc-type-for-null: null
+    jdbc-type-for-null: varchar
   global-config:
     banner: off
-  type-aliases-package: cn.hfbin.seckill.entity
-  mapper-locations: classpath:mybatis/mappers/*.xml
+    db-config:
+      logic-delete-value: 1
+      logic-delete-field: deleted
+      logic-not-delete-value: 0
+  type-aliases-package: cn.az.sec.entity
