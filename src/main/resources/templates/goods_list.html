@@ -23,7 +23,7 @@
             <div class="seckill_price">
                 <p th:text="${goods.goodsTitle}"></p>
                 <p>
-                    <span class="price1" th:text="${goods.seckillPrice}+'元  '"></span>
+                    <span class="price1" th:text="${goods.seckilPrice}+'元  '"></span>
                     <del><span class="price2" th:text="${goods.goodsPrice}+'元'"></span></del>
                 </p>
                 <a th:href="'/goods_detail.htm?goodsId='+${goods.id}">

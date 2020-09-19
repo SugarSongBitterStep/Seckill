@@ -22,12 +22,6 @@ import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-/**
- * Created by: HuangFuBin
- * Date: 2018/7/16
- * Time: 16:47
- * Such description:
- */
 @Slf4j
 @Service("seckillOrderService")
 public class SeckillOrderServiceImpl extends ServiceImpl<SeckillOrderMapper, SeckillOrder> implements SeckillOrderService {
@@ -37,13 +31,13 @@ public class SeckillOrderServiceImpl extends ServiceImpl<SeckillOrderMapper, Sec
     @Resource
     private RedisService redisService;
     @Resource
-    OrderService orderService;
+    private OrderService orderService;
 
     @Override
     public SeckillOrder getSeckillOrderByUserIdGoodsId(long userId, long goodsId) {
-        return baseMapper.selectOne(Wrappers.<SeckillOrder>query()
-                .eq("userId", userId)
-                .eq("goods_id", goodsId));
+        return baseMapper.selectOne(Wrappers.<SeckillOrder>lambdaQuery()
+                .eq(SeckillOrder::getUserId, userId)
+                .eq(SeckillOrder::getGoodsId, goodsId));
     }
 
     @Override
@@ -58,7 +52,7 @@ public class SeckillOrderServiceImpl extends ServiceImpl<SeckillOrderMapper, Sec
             orderInfo.setGoodsCount(1);
             orderInfo.setGoodsId(goods.getId());
             orderInfo.setGoodsName(goods.getGoodsName());
-            orderInfo.setGoodsPrice(goods.getSeckillPrice());
+            orderInfo.setGoodsPrice(goods.getSeckilPrice());
             orderInfo.setOrderChannel(1);
             orderInfo.setStatus(0);
             orderInfo.setUserId((long) user.getId());

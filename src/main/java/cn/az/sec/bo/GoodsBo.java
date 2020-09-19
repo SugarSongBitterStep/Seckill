@@ -5,6 +5,9 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * @author az
+ */
 @Setter
 @Getter
 @ToString
@@ -12,7 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class GoodsBo {
 
-    private BigDecimal seckillPrice;
+    private BigDecimal seckilPrice;
 
     private Integer stockCount;
 

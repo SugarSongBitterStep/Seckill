@@ -35,9 +35,9 @@ import java.util.List;
 public class GoodsController {
 
     @Autowired
-    RedisService redisService;
+    private RedisService redisService;
     @Autowired
-    SeckillGoodsService seckillGoodsService;
+    private SeckillGoodsService seckillGoodsService;
 
     @RequestMapping("/list")
     public String list(Model model) {

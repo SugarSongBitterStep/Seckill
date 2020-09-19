@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @Configuration
 @EnableTransactionManagement
-@MapperScan("cn.hfbin.seckill.dao")
+@MapperScan("cn.az.sec.dao")
 public class MybatisPlusConfig {
 
     @Bean

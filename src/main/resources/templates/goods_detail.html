@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ch">
 <head>
     <title>商品详情</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -15,29 +15,29 @@
 
 <div class="top">
     <span th:if="${user == null}"> 您还没有登录，请登陆后再操作</span>
-    <span th:if="${user != null}"> <span th:text="'欢迎您 '+${user.userName}"></span></span>
+    <span th:if="${user != null}"> <span th:text="'欢迎您 '+${user.username}"></span></span>
     <span>没有收货地址的提示。。。</span>
 </div>
 <div class="goods">
     <div class="containers">
         <div class="goods_view">
-            <img th:src="@{${goods.goodsImg}}" width="560"/>
+            <img th:src="@{${goods.goodsImg}}" width="560" alt="#"/>
         </div>
         <div class="goods_info">
             <h2 th:text="${goods.goodsName}"></h2>
             <p class="title" th:text="${goods.goodsTitle}"></p>
             <p>
-                <span class="price1" th:text="${goods.seckillPrice}+'元  '"></span>
+                <span class="price1" th:text="${goods.seckilPrice}+'元  '"></span>
                 <del><span class="price2" th:text="${goods.goodsPrice}+'元'"></span></del>
             </p>
             <div class="seckill_data">
                 <div>
                     <span>秒杀开始时间</span>
-                    <p th:text="${#dates.format(goods.startDate, 'yyyy-MM-dd HH:mm:ss')}"></p>
+                    <p th:text="${#temporals.format(goods.startTime, 'yyyy-MM-dd HH:mm:ss')}"></p>
                 </div>
                 <div>
                     <span>秒杀结束时间</span>
-                    <p th:text="${#dates.format(goods.endDate, 'yyyy-MM-dd HH:mm:ss')}"></p>
+                    <p th:text="${#temporals.format(goods.endTime, 'yyyy-MM-dd HH:mm:ss')}"></p>
                 </div>
             </div>
             <div class="seckillStatus">
@@ -86,7 +86,7 @@
                 $("#remainSeconds").val(remainSeconds - 1);
                 countDown();
             }, 1000);
-        } else if (remainSeconds == 0) {//秒杀进行中
+        } else if (remainSeconds === 0) {//秒杀进行中
             $("#buyButton").attr("disabled", false);
             if (timeout) {
                 clearTimeout(timeout);

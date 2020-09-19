@@ -36,90 +36,93 @@ import java.util.Map;
 @Component
 public class AuthorityInterceptor implements HandlerInterceptor {
 
+    private final Logger logger = LoggerFactory.getLogger(AuthorityInterceptor.class);
     @Resource
     private RedisService redisService;
 
-    private final Logger logger = LoggerFactory.getLogger(AuthorityInterceptor.class);
-
     @Override
     public boolean preHandle(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) throws Exception {
-        //请求controller中的方法名
-        HandlerMethod handlerMethod = (HandlerMethod) handler;
-        //解析HandlerMethod
-        String methodName = handlerMethod.getMethod().getName();
-        String className = handlerMethod.getBean().getClass().getSimpleName();
+        if (handler instanceof HandlerMethod) {
 
-        StringBuffer requestParamBuffer = new StringBuffer();
-        Map<?, ?> paramMap = request.getParameterMap();
-        for (Map.Entry<?, ?> value : paramMap.entrySet()) {
-            String mapKey = (String) value.getKey();
-            String mapValue = "";
 
-            //request的这个参数map的value返回的是一个String[]
-            Object obj = value.getValue();
-            if (obj instanceof String[]) {
-                String[] strings = (String[]) obj;
-                mapValue = Arrays.toString(strings);
+            //请求controller中的方法名
+            HandlerMethod handlerMethod = (HandlerMethod) handler;
+            //解析HandlerMethod
+            String methodName = handlerMethod.getMethod().getName();
+            String className = handlerMethod.getBean().getClass().getSimpleName();
+
+            StringBuffer requestParamBuffer = new StringBuffer();
+            Map<?, ?> paramMap = request.getParameterMap();
+            for (Map.Entry<?, ?> value : paramMap.entrySet()) {
+                String mapKey = (String) value.getKey();
+                String mapValue = "";
+
+                //request的这个参数map的value返回的是一个String[]
+                Object obj = value.getValue();
+                if (obj instanceof String[]) {
+                    String[] strings = (String[]) obj;
+                    mapValue = Arrays.toString(strings);
+                }
+                requestParamBuffer.append(mapKey).append("=").append(mapValue);
             }
-            requestParamBuffer.append(mapKey).append("=").append(mapValue);
-        }
 
-        //接口限流
-        AccessLimit accessLimit = handlerMethod.getMethodAnnotation(AccessLimit.class);
-        if (accessLimit == null) {
-            return true;
-        }
-        int seconds = accessLimit.seconds();
-        int maxCount = accessLimit.maxCount();
-        boolean needLogin = accessLimit.needLogin();
-        String key = request.getRequestURI();
+            //接口限流
+            AccessLimit accessLimit = handlerMethod.getMethodAnnotation(AccessLimit.class);
+            if (accessLimit == null) {
+                return true;
+            }
+            int seconds = accessLimit.seconds();
+            int maxCount = accessLimit.maxCount();
+            boolean needLogin = accessLimit.needLogin();
+            String key = request.getRequestURI();
 
 
-        //对于拦截器中拦截manage下的login.do的处理,对于登录不拦截，直接放行
-        if (!StringUtils.equals(className, SeckillController.class.getName())) {
-            //如果是拦截到登录请求，不打印参数，因为参数里面有密码，全部会打印到日志中，防止日志泄露
-            logger.info("权限拦截器拦截到请求 SeckillController ,className:{},methodName:{}", className, methodName);
-            return true;
-        }
+            //对于拦截器中拦截manage下的login.do的处理,对于登录不拦截，直接放行
+            if (!StringUtils.equals(className, SeckillController.class.getName())) {
+                //如果是拦截到登录请求，不打印参数，因为参数里面有密码，全部会打印到日志中，防止日志泄露
+                logger.info("权限拦截器拦截到请求 SeckillController ,className:{},methodName:{}", className, methodName);
+                return true;
+            }
 
-        logger.info("--> 权限拦截器拦截到请求,className:{},methodName:{},param:{}", className, methodName, requestParamBuffer);
-        User user = null;
-        String loginToken = CookieUtil.readLoginToken(request);
-        if (StringUtils.isNotEmpty(loginToken)) {
-            user = redisService.get(UserKey.getByName, loginToken, User.class);
-        }
+            logger.info("--> 权限拦截器拦截到请求,className:{},methodName:{},param:{}", className, methodName, requestParamBuffer);
+            User user = null;
+            String loginToken = CookieUtil.readLoginToken(request);
+            if (StringUtils.isNotEmpty(loginToken)) {
+                user = redisService.get(UserKey.getByName, loginToken, User.class);
+            }
 
-        if (needLogin) {
-            if (user == null) {
-                render(response, CodeMsg.USER_NO_LOGIN);
+            if (needLogin) {
+                if (user == null) {
+                    render(response, CodeMsg.USER_NO_LOGIN);
+                    return false;
+                }
+                key += "_" + user.getId();
+            }
+            AccessKey ak = AccessKey.withExpire;
+            Integer count = redisService.get(ak, key, Integer.class);
+            if (count == null) {
+                redisService.set(ak, key, 1, seconds);
+            } else if (count < maxCount) {
+                redisService.incr(ak, key);
+            } else {
+                render(response, CodeMsg.ACCESS_LIMIT_REACHED);
                 return false;
             }
-            key += "_" + user.getId();
-        }
-        AccessKey ak = AccessKey.withExpire;
-        Integer count = redisService.get(ak, key, Integer.class);
-        if (count == null) {
-            redisService.set(ak, key, 1, seconds);
-        } else if (count < maxCount) {
-            redisService.incr(ak, key);
-        } else {
-            render(response, CodeMsg.ACCESS_LIMIT_REACHED);
-            return false;
-        }
 
-        if (user == null) {
-            //重置 重写response一定要重置 这里要添加reset，否则报异常 getWriter() has already been called for this response
-            response.reset();
-            // 这里要设置编码，否则会乱码
-            response.setCharacterEncoding("UTF-8");
-            // 这里要设置返回值类型，因为全部是json接口。
-            response.setContentType("application/json;charset=UTF-8");
-            PrintWriter out = response.getWriter();
-            out.print(JsonUtil.obj2String(Result.error(CodeMsg.USER_NO_LOGIN)));
-            response.sendRedirect(request.getContextPath()+"/page/login");
-            out.flush();
-            out.close();
-            return false;
+            if (user == null) {
+                //重置 重写response一定要重置 这里要添加reset，否则报异常 getWriter() has already been called for this response
+                response.reset();
+                // 这里要设置编码，否则会乱码
+                response.setCharacterEncoding("UTF-8");
+                // 这里要设置返回值类型，因为全部是json接口。
+                response.setContentType("application/json;charset=UTF-8");
+                PrintWriter out = response.getWriter();
+                out.print(JsonUtil.obj2String(Result.error(CodeMsg.USER_NO_LOGIN)));
+                response.sendRedirect(request.getContextPath() + "/page/login");
+                out.flush();
+                out.close();
+                return false;
+            }
         }
         return true;
     }
